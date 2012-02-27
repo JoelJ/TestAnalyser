@@ -1,0 +1,10 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+	<!--<j:forEach items="${it.testResults.keySet()}" var="testResultThread">-->
+		<!--<h1>${testResultThread}</h1>-->
+		<!--<ul>-->
+			<!--<j:forEach items="${it.testResults.get(testResultThread)}" var="testResult">-->
+				<!--<li>${testResult}</li>-->
+			<!--</j:forEach>-->
+		<!--</ul>-->
+	<!--</j:forEach>-->
+</j:jelly>

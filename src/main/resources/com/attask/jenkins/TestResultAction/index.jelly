@@ -1,0 +1,98 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:test="/lib/test">
+	<l:layout>
+		<st:include it="${it.build}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<style>
+				#TestResultAction .exception {
+					cursor: pointer;
+					<!--font-family: monospace;-->
+					font-size: 8pt;
+					height: 10pt;
+					overflow: hidden;
+				}
+
+				#TestResultAction .exception.expanded {
+					height: auto;
+				}
+
+				#TestResultAction .header {
+					font-size: 12pt;
+					font-weight: bold;
+				}
+
+				#TestResultAction ol {
+					margin-top: 3px;
+					margin-bottom: 20px;
+				}
+
+				#TestResultAction .skipped {
+					color: gray;
+				}
+
+				#TestResultAction .failure {
+					color: red;
+				}
+
+				#TestResultAction .skipped-label {
+					padding-left:5px;
+				}
+
+				#TestResultAction ul.legend li span {
+					padding-right: 5px;
+				}
+
+			</style>
+
+			<script>
+				Event.observe(window, 'load', function() {
+					function onclickEvent(e) {
+						$(e.target).toggleClassName('expanded');
+					}
+
+					$$('.exception').each(function(exceptionElement) {
+						exceptionElement.observe('click', onclickEvent);
+					});
+				});
+			</script>
+
+			<div id="TestResultAction">
+				<ul class="legend">
+					<li>Tests are grouped by the thread they ran on, therefore they each group shares the same customer</li>
+					<li>Tests are listed in the order they ran on that thread</li>
+					<li>
+						<span style="font-weight:bold;">Black:</span>
+						<span>Passed</span>
+					</li>
+					<li>
+						<span style="color: red; font-weight:bold;">Red:</span>
+						<span>Failure - Click exception to expand</span>
+					</li>
+					<li>
+						<span style="color: gray; font-weight:bold;">Gray:</span>
+						<span>Skipped</span>
+					</li>
+				</ul>
+
+				<j:forEach items="${it.testResults.keySet()}" var="testResultThread">
+					<div id="${testResultThread}">
+						<a href="${it.getLinkForThread(testResultThread)}" class="header">${testResultThread}</a>
+						<ol>
+							<j:forEach items="${it.testResults.get(testResultThread)}" var="testResult">
+								<li name="${testResult}"
+										class="${testResult.wasSkipped ? 'skipped' : ''}${testResult.getIsFailure() ? 'failure' : ''}">
+									<span class="name">${testResult}</span>
+									<j:if test="${testResult.getIsFailure()}">
+										<div class="exception">${testResult.getException().replaceAll('\n', '&lt;br/&gt;')}</div>
+									</j:if>
+									<j:if test="${testResult.wasSkipped}">
+										<span class="skipped-label">(skipped)</span>
+									</j:if>
+								</li>
+							</j:forEach>
+						</ol>
+					</div>
+				</j:forEach>
+			</div>
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
